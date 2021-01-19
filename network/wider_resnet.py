@@ -39,7 +39,7 @@ from functools import partial
 import torch.nn as nn
 import torch
 import network.mynn as mynn
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 
 def bnrelu(channels):

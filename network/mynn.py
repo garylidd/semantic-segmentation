@@ -5,7 +5,7 @@ initialization
 import re
 import torch
 import torch.nn as nn
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 from apex import amp
 

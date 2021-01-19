@@ -37,7 +37,7 @@ import transforms.joint_transforms as joint_transforms
 import transforms.transforms as extended_transforms
 from torch.utils.data import DataLoader
 
-from config import cfg, update_dataset_cfg, update_dataset_inst
+from extern.nvidia_segment.config import cfg, update_dataset_cfg, update_dataset_inst
 from runx.logx import logx
 from datasets.randaugment import RandAugment
 
@@ -50,12 +50,12 @@ def setup_loaders(args):
     """
 
     # TODO add error checking to make sure class exists
-    logx.msg(f'dataset = {args.dataset}')
+    # logx.msg(f'dataset = {args.dataset}')
 
     mod = importlib.import_module('datasets.{}'.format(args.dataset))
     dataset_cls = getattr(mod, 'Loader')
 
-    logx.msg(f'ignore_label = {dataset_cls.ignore_label}')
+    # logx.msg(f'ignore_label = {dataset_cls.ignore_label}')
 
     update_dataset_cfg(num_classes=dataset_cls.num_classes,
                        ignore_label=dataset_cls.ignore_label)

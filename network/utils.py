@@ -42,7 +42,7 @@ from network.Resnet import resnet50, resnet101
 import network.hrnetv2 as hrnetv2
 
 from runx.logx import logx
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 
 class get_resnet(nn.Module):
@@ -137,7 +137,7 @@ def get_trunk(trunk_name, output_stride=8):
     else:
         raise 'unknown backbone {}'.format(trunk_name)
 
-    logx.msg("Trunk: {}".format(trunk_name))
+    # logx.msg("Trunk: {}".format(trunk_name))
     return backbone, s2_ch, s4_ch, high_level_ch
 
 

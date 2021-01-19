@@ -33,7 +33,7 @@ from torch import nn
 from network.mynn import initialize_weights, Norm2d, Upsample
 from network.mynn import ResizeX, scale_as
 from network.utils import get_aspp, get_trunk
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 
 class ASDV3P(nn.Module):
@@ -158,7 +158,7 @@ class ASDV3P(nn.Module):
             attn = attn_tensor[:, idx:idx+1, :, :]
             attn_1x_scale = scale_as(attn, x_1x)
             if output is None:
-                # logx.msg(f'ps[scale] shape {ps[scale].shape} '
+                # # logx.msg(f'ps[scale] shape {ps[scale].shape} '
                 #         f'attn shape {attn_1x_scale.shape}')
                 output = ps[scale] * attn_1x_scale
             else:

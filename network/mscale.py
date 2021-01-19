@@ -30,12 +30,12 @@ POSSIBILITY OF SUCH DAMAGE.
 import torch
 from torch import nn
 
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from network.mynn import initialize_weights, Norm2d, Upsample, Upsample2
 from network.mynn import ResizeX, scale_as
 from network.utils import get_aspp, get_trunk, ConvBnRelu
 from network.utils import make_seg_head, make_attn_head
-from utils.misc import fmt_scale
+from extern.nvidia_segment.utils.misc import fmt_scale
 
 
 class MscaleBase(nn.Module):

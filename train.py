@@ -38,12 +38,12 @@ import torch
 
 from apex import amp
 from runx.logx import logx
-from config import assert_and_infer_cfg, update_epoch, cfg
-from utils.misc import AverageMeter, prep_experiment, eval_metrics
-from utils.misc import ImageDumper
-from utils.trnval_utils import eval_minibatch, validate_topn
-from loss.utils import get_loss
-from loss.optimizer import get_optimizer, restore_opt, restore_net
+from extern.nvidia_segment.config import assert_and_infer_cfg, update_epoch, cfg
+from extern.nvidia_segment.utils.misc import AverageMeter, prep_experiment, eval_metrics
+from extern.nvidia_segment.utils.misc import ImageDumper
+from extern.nvidia_segment.utils.trnval_utils import eval_minibatch, validate_topn
+from extern.nvidia_segment.loss.utils import get_loss
+from extern.nvidia_segment.loss.optimizer import get_optimizer, restore_opt, restore_net
 
 import datasets
 import network
@@ -354,7 +354,7 @@ def main():
         args.restore_optimizer = True
         msg = ("Found details of a requested auto-resume: checkpoint={}"
                " tensorboard={} at epoch {}")
-        logx.msg(msg.format(checkpoint_fn, args.result_dir,
+        # logx.msg(msg.format(checkpoint_fn, args.result_dir,
                             args.start_epoch))
     elif args.resume:
         checkpoint = torch.load(args.resume,
@@ -364,7 +364,7 @@ def main():
         args.restore_net = True
         args.restore_optimizer = True
         msg = "Resuming from: checkpoint={}, epoch {}, arch {}"
-        logx.msg(msg.format(args.resume, args.start_epoch, args.arch))
+        # logx.msg(msg.format(args.resume, args.start_epoch, args.arch))
     elif args.snapshot:
         if 'ASSETS_PATH' in args.snapshot:
             args.snapshot = args.snapshot.replace('ASSETS_PATH', cfg.ASSETS_PATH)
@@ -372,7 +372,7 @@ def main():
                                 map_location=torch.device('cpu'))
         args.restore_net = True
         msg = "Loading weights from: checkpoint={}".format(args.snapshot)
-        logx.msg(msg)
+        # logx.msg(msg)
 
     net = network.get_net(args, criterion)
     optim, scheduler = get_optimizer(args, net)
@@ -410,7 +410,6 @@ def main():
     #  --eval folder                        just dump all basic images
     #  --eval folder --dump_assets          dump all images and assets
     if args.eval == 'val':
-
         if args.dump_topn:
             validate_topn(val_loader, net, criterion_val, optim, 0, args)
         else:
@@ -520,7 +519,7 @@ def train(train_loader, net, optim, curr_epoch):
         msg = msg.format(
             curr_epoch, i + 1, len(train_loader), train_main_loss.avg,
             optim.param_groups[-1]['lr'], batchtime)
-        logx.msg(msg)
+        # logx.msg(msg)
 
         metrics = {'loss': train_main_loss.avg,
                    'lr': optim.param_groups[-1]['lr']}
@@ -564,7 +563,7 @@ def validate(val_loader, net, criterion, optim, epoch,
         if args.dump_for_auto_labelling or args.dump_for_submission:
             submit_fn = '{}.png'.format(img_names[0])
             if val_idx % 20 == 0:
-                logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
+                # logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
             if os.path.exists(os.path.join(dumper.save_dir, submit_fn)):
                 continue
 
@@ -586,7 +585,7 @@ def validate(val_loader, net, criterion, optim, epoch,
             break
 
         if val_idx % 20 == 0:
-            logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
+            # logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
 
     was_best = False
     if calc_metrics:

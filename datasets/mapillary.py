@@ -33,7 +33,7 @@ Mapillary Dataset Loader
 import os
 import json
 
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from runx.logx import logx
 from datasets.base_loader import BaseLoader
 from datasets.utils import make_dataset_folder
@@ -75,7 +75,7 @@ class Loader(BaseLoader):
             mask_root = os.path.join(root, split_name, 'labels')
             self.all_imgs = self.find_images(img_root, mask_root, img_ext,
                                              mask_ext)
-        logx.msg('all imgs {}'.format(len(self.all_imgs)))
+        # logx.msg('all imgs {}'.format(len(self.all_imgs)))
         self.centroids = uniform.build_centroids(self.all_imgs,
                                                  self.num_classes,
                                                  self.train,

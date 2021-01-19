@@ -14,8 +14,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from loss import rmi_utils
-from config import cfg
+from extern.nvidia_segment.loss import rmi_utils
+from extern.nvidia_segment.config import cfg
 from apex import amp
 
 _euler_num = 2.718281828        # euler number
@@ -124,8 +124,8 @@ class RMILoss(nn.Module):
         rmi_loss = self.rmi_lower_bound(valid_onehot_labels_4D, probs_4D)
 
         # add together
-        #logx.msg(f'lambda_way {self.lambda_way}')
-        #logx.msg(f'bce_loss {bce_loss} weight_lambda {self.weight_lambda} rmi_loss {rmi_loss}')
+        ## logx.msg(f'lambda_way {self.lambda_way}')
+        ## logx.msg(f'bce_loss {bce_loss} weight_lambda {self.weight_lambda} rmi_loss {rmi_loss}')
         if self.lambda_way:
             final_loss = self.weight_lambda * bce_loss + rmi_loss * (1 - self.weight_lambda)
         else:

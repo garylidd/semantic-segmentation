@@ -40,7 +40,7 @@ import os
 import re
 import torch
 
-from utils.attr_dict import AttrDict
+from extern.nvidia_segment.utils.attr_dict import AttrDict
 from runx.logx import logx
 
 
@@ -96,7 +96,7 @@ __C.DATASET.CITYSCAPES_SPLITS = 3
 __C.DATASET.MEAN = [0.485, 0.456, 0.406]
 __C.DATASET.STD = [0.229, 0.224, 0.225]
 __C.DATASET.NAME = ''
-__C.DATASET.NUM_CLASSES = 0
+__C.DATASET.NUM_CLASSES = 19
 __C.DATASET.IGNORE_LABEL = 255
 __C.DATASET.DUMP_IMAGES = False
 __C.DATASET.CLASS_UNIFORM_PCT = 0.5
@@ -137,7 +137,7 @@ __C.MODEL.MSCALE_INIT = 0.5
 __C.MODEL.ATTNSCALE_BN_HEAD = False
 __C.MODEL.GRAD_CKPT = False
 
-WEIGHTS_PATH = os.path.join(__C.ASSETS_PATH, 'seg_weights')
+WEIGHTS_PATH = './extern/nvidia_segment'
 __C.MODEL.WRN38_CHECKPOINT = \
     os.path.join(WEIGHTS_PATH, 'wider_resnet38.pth.tar')
 __C.MODEL.WRN41_CHECKPOINT = \
@@ -195,10 +195,10 @@ def torch_version_float():
     version_re = re.search(r'^([0-9]+\.[0-9]+)', version_str)
     if version_re:
         version = float(version_re.group(1))
-        logx.msg(f'Torch version: {version}, {version_str}')
+        # logx.msg(f'Torch version: {version}, {version_str}')
     else:
         version = 1.0
-        logx.msg(f'Can\'t parse torch version ({version}), assuming {version}')
+        # logx.msg(f'Can\'t parse torch version ({version}), assuming {version}')
     return version
 
 
@@ -211,7 +211,7 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
     or code that's harder to understand than is necessary).
     """
 
-    __C.OPTIONS.TORCH_VERSION = torch_version_float()
+    # __C.OPTIONS.TORCH_VERSION = torch_version_float()
 
     if hasattr(args, 'syncbn') and args.syncbn:
         if args.apex:
@@ -228,54 +228,54 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
         cfg.immutable(True)
         return
 
-    if args.batch_weighting:
-        __C.BATCH_WEIGHTING = True
+    # if args.batch_weighting:
+    #     __C.BATCH_WEIGHTING = True
 
-    if args.custom_coarse_prob:
-        __C.DATASET.CUSTOM_COARSE_PROB = args.custom_coarse_prob
+    # if args.custom_coarse_prob:
+    #     __C.DATASET.CUSTOM_COARSE_PROB = args.custom_coarse_prob
 
-    if args.jointwtborder:
-        if args.strict_bdr_cls != '':
-            strict_classes = [int(i) for i in args.strict_bdr_cls.split(",")]
-            __C.STRICTBORDERCLASS = strict_classes
-        if args.rlx_off_epoch > -1:
-            __C.REDUCE_BORDER_EPOCH = args.rlx_off_epoch
+    # if args.jointwtborder:
+    #     if args.strict_bdr_cls != '':
+    #         strict_classes = [int(i) for i in args.strict_bdr_cls.split(",")]
+    #         __C.STRICTBORDERCLASS = strict_classes
+    #     if args.rlx_off_epoch > -1:
+    #         __C.REDUCE_BORDER_EPOCH = args.rlx_off_epoch
 
     cfg.DATASET.NAME = args.dataset
-    cfg.DATASET.DUMP_IMAGES = args.dump_augmentation_images
+    # cfg.DATASET.DUMP_IMAGES = args.dump_augmentation_images
 
-    cfg.DATASET.CLASS_UNIFORM_PCT = args.class_uniform_pct
-    cfg.DATASET.CLASS_UNIFORM_TILE = args.class_uniform_tile
-    if args.coarse_boost_classes:
-        cfg.DATASET.COARSE_BOOST_CLASSES = \
-            [int(i) for i in args.coarse_boost_classes.split(',')]
+    # cfg.DATASET.CLASS_UNIFORM_PCT = args.class_uniform_pct
+    # cfg.DATASET.CLASS_UNIFORM_TILE = args.class_uniform_tile
+    # if args.coarse_boost_classes:
+    #     cfg.DATASET.COARSE_BOOST_CLASSES = \
+    #         [int(i) for i in args.coarse_boost_classes.split(',')]
 
     cfg.DATASET.CLASS_UNIFORM_BIAS = None
 
-    if args.dump_assets and args.dataset == 'cityscapes':
-        # A hacky way to force that when we dump cityscapes
-        logx.msg('*' * 70)
-        logx.msg(f'ALERT: forcing cv=3 to allow all images to be evaluated')
-        logx.msg('*' * 70)
-        cfg.DATASET.CV = 3
-    else:
-        cfg.DATASET.CV = args.cv
+    # if args.dump_assets and args.dataset == 'cityscapes':
+    #     # A hacky way to force that when we dump cityscapes
+    #     # logx.msg('*' * 70)
+    #     # logx.msg(f'ALERT: forcing cv=3 to allow all images to be evaluated')
+    #     # logx.msg('*' * 70)
+    #     cfg.DATASET.CV = 3
+    # else:
+    cfg.DATASET.CV = args.cv
     # Total number of splits
     cfg.DATASET.CV_SPLITS = 3
 
-    if args.translate_aug_fix:
-        cfg.DATASET.TRANSLATE_AUG_FIX = True
+    # if args.translate_aug_fix:
+    #     cfg.DATASET.TRANSLATE_AUG_FIX = True
 
     cfg.MODEL.MSCALE = ('mscale' in args.arch.lower() or 'attnscale' in
                         args.arch.lower())
 
-    if args.three_scale:
-        cfg.MODEL.THREE_SCALE = True
+    # if args.three_scale:
+    #     cfg.MODEL.THREE_SCALE = True
 
-    if args.alt_two_scale:
-        cfg.MODEL.ALT_TWO_SCALE = True
+    # if args.alt_two_scale:
+    #     cfg.MODEL.ALT_TWO_SCALE = True
 
-    cfg.MODEL.MSCALE_LO_SCALE = args.mscale_lo_scale
+    # cfg.MODEL.MSCALE_LO_SCALE = args.mscale_lo_scale
 
     def str2list(s):
         alist = s.split(',')
@@ -284,78 +284,78 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
 
     if args.n_scales:
         cfg.MODEL.N_SCALES = str2list(args.n_scales)
-        logx.msg('n scales {}'.format(cfg.MODEL.N_SCALES))
+        # logx.msg('n scales {}'.format(cfg.MODEL.N_SCALES))
 
-    if args.extra_scales:
-        cfg.MODEL.EXTRA_SCALES = str2list(args.extra_scales)
+    # if args.extra_scales:
+    #     cfg.MODEL.EXTRA_SCALES = str2list(args.extra_scales)
 
-    if args.align_corners:
-        cfg.MODEL.ALIGN_CORNERS = True
+    # if args.align_corners:
+    #     cfg.MODEL.ALIGN_CORNERS = True
 
-    if args.init_decoder:
-        cfg.OPTIONS.INIT_DECODER = True
+    # if args.init_decoder:
+    #     cfg.OPTIONS.INIT_DECODER = True
 
-    cfg.RESULT_DIR = args.result_dir
+    # cfg.RESULT_DIR = args.result_dir
 
-    if args.mask_out_cityscapes:
-        cfg.DATASET.MASK_OUT_CITYSCAPES = True
+    # if args.mask_out_cityscapes:
+    #     cfg.DATASET.MASK_OUT_CITYSCAPES = True
 
     if args.fp16:
         cfg.TRAIN.FP16 = True
 
-    if args.map_crop_val:
-        __C.DATASET.MAPILLARY_CROP_VAL = True
+    # if args.map_crop_val:
+    #     __C.DATASET.MAPILLARY_CROP_VAL = True
 
-    __C.DATASET.CROP_SIZE = args.crop_size
+    # __C.DATASET.CROP_SIZE = args.crop_size
 
-    if args.aspp_bot_ch is not None:
-        # todo fixme: make all code use this cfg
-        __C.MODEL.ASPP_BOT_CH = int(args.aspp_bot_ch)
+    # if args.aspp_bot_ch is not None:
+    #     # todo fixme: make all code use this cfg
+    #     __C.MODEL.ASPP_BOT_CH = int(args.aspp_bot_ch)
 
-    if args.mscale_cat_scale_flt:
-        __C.MODEL.MSCALE_CAT_SCALE_FLT = True
+    # if args.mscale_cat_scale_flt:
+    #     __C.MODEL.MSCALE_CAT_SCALE_FLT = True
 
-    if args.mscale_no3x3:
-        __C.MODEL.MSCALE_INNER_3x3 = False
+    # if args.mscale_no3x3:
+    #     __C.MODEL.MSCALE_INNER_3x3 = False
 
-    if args.mscale_dropout:
-        __C.MODEL.MSCALE_DROPOUT = True
+    # if args.mscale_dropout:
+    #     __C.MODEL.MSCALE_DROPOUT = True
 
-    if args.mscale_old_arch:
-        __C.MODEL.MSCALE_OLDARCH = True
+    # if args.mscale_old_arch:
+    #     __C.MODEL.MSCALE_OLDARCH = True
 
-    if args.mscale_init is not None:
-        __C.MODEL.MSCALE_INIT = args.mscale_init
+    # if args.mscale_init is not None:
+    #     __C.MODEL.MSCALE_INIT = args.mscale_init
 
-    if args.attnscale_bn_head:
-        __C.MODEL.ATTNSCALE_BN_HEAD = True
+    # if args.attnscale_bn_head:
+    #     __C.MODEL.ATTNSCALE_BN_HEAD = True
 
-    if args.segattn_bot_ch is not None:
-        __C.MODEL.SEGATTN_BOT_CH = args.segattn_bot_ch
+    # if args.segattn_bot_ch is not None:
+    #     __C.MODEL.SEGATTN_BOT_CH = args.segattn_bot_ch
 
-    if args.set_cityscapes_root is not None:
-        # '/data/cs_imgs_cv0'
-        # '/data/cs_imgs_cv2'
-        __C.DATASET.CITYSCAPES_DIR = args.set_cityscapes_root
+    # if args.set_cityscapes_root is not None:
+    #     # '/data/cs_imgs_cv0'
+    #     # '/data/cs_imgs_cv2'
+    #     __C.DATASET.CITYSCAPES_DIR = args.set_cityscapes_root
 
-    if args.ocr_alpha is not None:
-        __C.LOSS.OCR_ALPHA = args.ocr_alpha
+    # if args.ocr_alpha is not None:
+    #     __C.LOSS.OCR_ALPHA = args.ocr_alpha
 
-    if args.ocr_aux_loss_rmi:
-        __C.LOSS.OCR_AUX_RMI = True
+    # if args.ocr_aux_loss_rmi:
+    #     __C.LOSS.OCR_AUX_RMI = True
 
-    if args.supervised_mscale_loss_wt is not None:
-        __C.LOSS.SUPERVISED_MSCALE_WT = args.supervised_mscale_loss_wt
+    # if args.supervised_mscale_loss_wt is not None:
+    #     __C.LOSS.SUPERVISED_MSCALE_WT = args.supervised_mscale_loss_wt
 
     cfg.DROPOUT_COARSE_BOOST_CLASSES = None
-    if args.custom_coarse_dropout_classes:
-        cfg.DROPOUT_COARSE_BOOST_CLASSES = \
-            [int(i) for i in args.custom_coarse_dropout_classes.split(',')]
+    # if args.custom_coarse_dropout_classes:
+    #     cfg.DROPOUT_COARSE_BOOST_CLASSES = \
+    #         [int(i) for i in args.custom_coarse_dropout_classes.split(',')]
 
-    if args.grad_ckpt:
-        __C.MODEL.GRAD_CKPT = True
+    # if args.grad_ckpt:
+    #     __C.MODEL.GRAD_CKPT = True
 
-    __C.GLOBAL_RANK = args.global_rank
+    # __C.GLOBAL_RANK = args.global_rank
 
     if make_immutable:
         cfg.immutable(True)
@@ -372,7 +372,7 @@ def update_dataset_cfg(num_classes, ignore_label):
     cfg.immutable(False)
     cfg.DATASET.NUM_CLASSES = num_classes
     cfg.DATASET.IGNORE_LABEL = ignore_label
-    logx.msg('num_classes = {}'.format(num_classes))
+    # logx.msg('num_classes = {}'.format(num_classes))
     cfg.immutable(True)
 
 

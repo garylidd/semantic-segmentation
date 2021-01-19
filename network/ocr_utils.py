@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from network.utils import BNReLU
 
 

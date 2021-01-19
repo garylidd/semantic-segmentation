@@ -53,7 +53,7 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 import numpy as np
 from multiprocessing import Pool
 from tqdm import tqdm
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 
 """ Utilities for computing, reading and saving benchmark evaluation."""

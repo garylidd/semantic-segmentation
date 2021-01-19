@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from network.mynn import Norm2d
 from apex.parallel import SyncBatchNorm
 from runx.logx import logx
@@ -276,7 +276,7 @@ class xception71(nn.Module):
         state_dict.update(model_dict)
         self.load_state_dict(state_dict, strict=False)
         del ckpt
-        logx.msg('Loaded {} weights'.format(pretrained_model))
+        # logx.msg('Loaded {} weights'.format(pretrained_model))
 
 
 if __name__ == "__main__":

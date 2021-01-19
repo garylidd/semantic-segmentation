@@ -32,7 +32,7 @@ from torch import nn
 from network.mynn import initialize_weights, Upsample
 from network.mynn import scale_as
 from network.utils import get_aspp, get_trunk, make_seg_head
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 
 class Basic(nn.Module):

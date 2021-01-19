@@ -38,7 +38,7 @@ from network.mynn import initialize_weights, Norm2d, Upsample
 from network.mynn import ResizeX, scale_as
 from network.utils import get_aspp, get_trunk
 from network.utils import make_seg_head, make_attn_head
-from config import cfg
+from extern.nvidia_segment.config import cfg
 
 
 class MscaleBase(nn.Module):

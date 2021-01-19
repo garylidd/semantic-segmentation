@@ -30,7 +30,7 @@ POSSIBILITY OF SUCH DAMAGE.
 import os
 import os.path as path
 
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from runx.logx import logx
 from datasets.base_loader import BaseLoader
 import datasets.cityscapes_labels as cityscapes_labels
@@ -69,7 +69,7 @@ def cities_cv_split(root, split, cv_split):
     all_cities = val_cities + trn_cities
 
     if cv_split == 3:
-        logx.msg('cv split {} {} {}'.format(split, cv_split, all_cities))
+        # logx.msg('cv split {} {} {}'.format(split, cv_split, all_cities))
         return all_cities
 
     num_val_cities = len(val_cities)
@@ -85,7 +85,7 @@ def cities_cv_split(root, split, cv_split):
             if split == 'train':
                 cities.append(all_cities[j])
 
-    logx.msg('cv split {} {} {}'.format(split, cv_split, cities))
+    # logx.msg('cv split {} {} {}'.format(split, cv_split, cities))
     return cities
 
 
@@ -98,7 +98,7 @@ def coarse_cities(root):
                             split)
     coarse_cities = [f'{split}/' + c for c in os.listdir(coarse_path)]
 
-    logx.msg(f'found {len(coarse_cities)} coarse cities')
+    # logx.msg(f'found {len(coarse_cities)} coarse cities')
     return coarse_cities
 
 
@@ -134,7 +134,7 @@ class Loader(BaseLoader):
             self.all_imgs = self.find_cityscapes_images(
                 self.fine_cities, img_root, mask_root, img_ext, mask_ext)
 
-        logx.msg(f'cn num_classes {self.num_classes}')
+        # logx.msg(f'cn num_classes {self.num_classes}')
         self.fine_centroids = uniform.build_centroids(self.all_imgs,
                                                       self.num_classes,
                                                       self.train,
@@ -211,7 +211,7 @@ class Loader(BaseLoader):
                     full_mask_fn = os.path.join(mask_root, city, mask_fn)
                 items.append((full_img_fn, full_mask_fn))
 
-        logx.msg('mode {} found {} images'.format(self.mode, len(items)))
+        # logx.msg('mode {} found {} images'.format(self.mode, len(items)))
 
         return items
 

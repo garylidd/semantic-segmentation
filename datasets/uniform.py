@@ -49,7 +49,7 @@ from collections import defaultdict
 from scipy.ndimage.measurements import center_of_mass
 from PIL import Image
 from tqdm import tqdm
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from runx.logx import logx
 
 pbar = None
@@ -242,13 +242,13 @@ def build_centroids(imgs, num_classes, train, cv=None, coarse=False,
     json_fn = os.path.join(cfg.DATASET.CENTROID_ROOT,
                            centroid_fn)
     if os.path.isfile(json_fn):
-        logx.msg('Loading centroid file {}'.format(json_fn))
+        # logx.msg('Loading centroid file {}'.format(json_fn))
         with open(json_fn, 'r') as json_data:
             centroids = json.load(json_data)
         centroids = {int(idx): centroids[idx] for idx in centroids}
-        logx.msg('Found {} centroids'.format(len(centroids)))
+        # logx.msg('Found {} centroids'.format(len(centroids)))
     else:
-        logx.msg('Didn\'t find {}, so building it'.format(json_fn))
+        # logx.msg('Didn\'t find {}, so building it'.format(json_fn))
 
         if cfg.GLOBAL_RANK==0:
 
@@ -293,10 +293,10 @@ def build_epoch(imgs, centroids, num_classes, train):
     if not (train and class_uniform_pct):
         return imgs
 
-    logx.msg("Class Uniform Percentage: {}".format(str(class_uniform_pct)))
+    # logx.msg("Class Uniform Percentage: {}".format(str(class_uniform_pct)))
     num_epoch = int(len(imgs))
 
-    logx.msg('Class Uniform items per Epoch: {}'.format(str(num_epoch)))
+    # logx.msg('Class Uniform items per Epoch: {}'.format(str(num_epoch)))
     num_per_class = int((num_epoch * class_uniform_pct) / num_classes)
     class_uniform_count = num_per_class * num_classes
     num_rand = num_epoch - class_uniform_count
@@ -306,7 +306,7 @@ def build_epoch(imgs, centroids, num_classes, train):
     # now add uniform sampling
     for class_id in range(num_classes):
         msg = "cls {} len {}".format(class_id, len(centroids[class_id]))
-        logx.msg(msg)
+        # logx.msg(msg)
     for class_id in range(num_classes):
         if cfg.DATASET.CLASS_UNIFORM_BIAS is not None:
             bias = cfg.DATASET.CLASS_UNIFORM_BIAS[class_id]

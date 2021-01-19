@@ -29,7 +29,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Null Loader
 """
-from config import cfg
+from extern.nvidia_segment.config import cfg
 from runx.logx import logx
 from datasets.base_loader import BaseLoader
 from datasets.utils import make_dataset_folder

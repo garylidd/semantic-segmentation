@@ -42,8 +42,8 @@ import torchvision.utils as vutils
 from tabulate import tabulate
 from PIL import Image
 
-from config import cfg
-from utils.results_page import ResultsPage
+from extern.nvidia_segment.config import cfg
+from extern.nvidia_segment.utils.results_page import ResultsPage
 from runx.logx import logx
 
 
@@ -142,7 +142,7 @@ def eval_metrics(iou_acc, args, net, optim, val_loss, epoch, mf_score=None):
         'acc': acc,
     }
     logx.metric('val', metrics, epoch)
-    logx.msg('Mean: {:2.2f}'.format(mean_iu * 100))
+    # logx.msg('Mean: {:2.2f}'.format(mean_iu * 100))
 
     save_dict = {
         'epoch': epoch,
@@ -168,19 +168,19 @@ def eval_metrics(iou_acc, args, net, optim, val_loss, epoch, mf_score=None):
         args.best_record['mean_iu'] = mean_iu
         args.best_record['epoch'] = epoch
 
-    logx.msg('-' * 107)
+    # logx.msg('-' * 107)
     if mf_score is None:
         fmt_str = ('{:5}: [epoch {}], [val loss {:0.5f}], [acc {:0.5f}], '
                    '[acc_cls {:.5f}], [mean_iu {:.5f}], [fwavacc {:0.5f}]')
         current_scores = fmt_str.format('this', epoch, val_loss.avg, acc,
                                         acc_cls, mean_iu, fwavacc)
-        logx.msg(current_scores)
+        # logx.msg(current_scores)
         best_scores = fmt_str.format(
             'best',
             args.best_record['epoch'], args.best_record['val_loss'],
             args.best_record['acc'], args.best_record['acc_cls'],
             args.best_record['mean_iu'], args.best_record['fwavacc'])
-        logx.msg(best_scores)
+        # logx.msg(best_scores)
     else:
         fmt_str = ('{:5}: [epoch {}], [val loss {:0.5f}], [mask f1 {:.5f} ] '
                    '[acc {:0.5f}], '
@@ -188,15 +188,15 @@ def eval_metrics(iou_acc, args, net, optim, val_loss, epoch, mf_score=None):
         current_scores = fmt_str.format('this', epoch, val_loss.avg,
                                         mf_score.avg, acc,
                                         acc_cls, mean_iu, fwavacc)
-        logx.msg(current_scores)
+        # logx.msg(current_scores)
         best_scores = fmt_str.format(
             'best',
             args.best_record['epoch'], args.best_record['val_loss'],
             args.best_record['mask_f1_score'],
             args.best_record['acc'], args.best_record['acc_cls'],
             args.best_record['mean_iu'], args.best_record['fwavacc'])
-        logx.msg(best_scores)
-    logx.msg('-' * 107)
+        # logx.msg(best_scores)
+    # logx.msg('-' * 107)
 
     return was_best
 
@@ -437,7 +437,7 @@ def print_evaluate_results(hist, iu, epoch=0, iou_per_scale=None,
     iu_FN = hist.sum(axis=0) - np.diag(hist)
     iu_TP = np.diag(hist)
 
-    logx.msg('IoU:')
+    # logx.msg('IoU:')
 
     header = ['Id', 'label']
     header.extend(['iU_{}'.format(scale) for scale in iou_per_scale])
@@ -470,7 +470,7 @@ def print_evaluate_results(hist, iu, epoch=0, iou_per_scale=None,
                             float(iou_per_scale[2.0][class_id] * 100), epoch)
 
     print_str = str(tabulate((tabulate_data), headers=header, floatfmt='1.2f'))
-    logx.msg(print_str)
+    # logx.msg(print_str)
 
 
 def metrics_per_image(hist):

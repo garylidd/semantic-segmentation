@@ -30,10 +30,10 @@ POSSIBILITY OF SUCH DAMAGE.
 import os
 import torch
 
-from config import cfg
-from utils.misc import fast_hist, fmt_scale
-from utils.misc import AverageMeter, eval_metrics
-from utils.misc import metrics_per_image
+from extern.nvidia_segment.config import cfg
+from extern.nvidia_segment.utils.misc import fast_hist, fmt_scale
+from extern.nvidia_segment.utils.misc import AverageMeter, eval_metrics
+from extern.nvidia_segment.utils.misc import metrics_per_image
 
 from runx.logx import logx
 
@@ -96,7 +96,7 @@ def eval_minibatch(data, net, criterion, val_loss, calc_metrics, args, val_idx):
     if args.multi_scale_inference:
         scales.extend([float(x) for x in args.extra_scales.split(',')])
         if val_idx == 0:
-            logx.msg(f'Using multi-scale inference (AVGPOOL) with scales {scales}')
+            # logx.msg(f'Using multi-scale inference (AVGPOOL) with scales {scales}')
 
     # input    = torch.Size([1, 3, h, w])
     # gt_image = torch.Size([1, h, w])
@@ -213,7 +213,7 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
     ######################################################################
     # First pass
     ######################################################################
-    logx.msg('First pass')
+    # logx.msg('First pass')
     image_metrics = {}
 
     net.eval()
@@ -236,7 +236,7 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
         iou_acc += _iou_acc
 
         if val_idx % 20 == 0:
-            logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
+            # logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
 
         if val_idx > 5 and args.test_mode:
             break
@@ -262,7 +262,7 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
             worst_images[img_name][classid] = fail_pixels
             class_to_images[classid][img_name] = fail_pixels
     msg = str(worst_images)
-    logx.msg(msg)
+    # logx.msg(msg)
 
     # write out per-gpu jsons
     # barrier
@@ -271,7 +271,7 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
     ######################################################################
     # 2nd pass
     ######################################################################
-    logx.msg('Second pass')
+    # logx.msg('Second pass')
     attn_map = None
 
     for val_idx, data in enumerate(val_loader):
@@ -305,7 +305,7 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
 
             class_name = cfg.DATASET_INST.trainid_to_name[classid]
             error_pixels = worst_images[img_name][classid]
-            logx.msg(f'{img_name} {class_name}: {error_pixels}')
+            # logx.msg(f'{img_name} {class_name}: {error_pixels}')
             img_names = [img_name + f'_{class_name}']
 
             to_dump = {'gt_images': gt_image,
@@ -323,7 +323,7 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
 
     html_fn = os.path.join(args.result_dir, 'best_images',
                            'topn_failures.html')
-    from utils.results_page import ResultsPage
+    from extern.nvidia_segment.utils.results_page import ResultsPage
     ip = ResultsPage('topn failures', html_fn)
     for classid in class_to_images:
         class_name = cfg.DATASET_INST.trainid_to_name[classid]
